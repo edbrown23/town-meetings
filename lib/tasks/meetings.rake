@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+LOCAL_REC_DIR = 'tmp/local_recordings'
+PROCESSED_REC_DIR = 'tmp/processed_recordings'
+
 desc 'Generate transcription from a meeting recording'
 task transcribe_meeting: [:environment] do
   meeting_id = ENV.fetch('meeting_id')
 
   meeting = Meeting.find(meeting_id)
-
-  LOCAL_REC_DIR = 'tmp/local_recordings'
 
   Rails.logger.info("Ensuring local recordings location exists")
   FileUtils.mkdir_p(LOCAL_REC_DIR)
@@ -19,7 +20,6 @@ task transcribe_meeting: [:environment] do
     `wget -O #{full_recording_filename} #{meeting.recording_url} `
   end
 
-  PROCESSED_REC_DIR = 'tmp/processed_recordings'
   FileUtils.mkdir_p(PROCESSED_REC_DIR)
 
   audio_filename = "#{PROCESSED_REC_DIR}/audio_only_#{meeting_id}#{File.extname(meeting.recording_url)}"
@@ -39,4 +39,19 @@ end
 desc 'Import a transcription for a meeting'
 task import_transcription: [:environment] do
   meeting_id = ENV.fetch('meeting_id')
+
+  transcription_filename = "#{PROCESSED_REC_DIR}/audio_only_#{meeting_id}.json"
+
+  parsed_transcription = JSON.parse(File.read(transcription_filename))
+
+  parsed_transcription['segments'].each do |segment|
+    TranscribedSection.create!(
+      meeting_id: meeting_id,
+      order: segment['id'],
+      seek: segment['seek'],
+      start: segment['start'],
+      end: segment['end'],
+      text: segment['text']
+    )
+  end
 end
