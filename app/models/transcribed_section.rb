@@ -17,4 +17,5 @@
 #  index_transcribed_sections_on_meeting_id  (meeting_id)
 #
 class TranscribedSection < ApplicationRecord
+  belongs_to :meeting
 end

@@ -14,4 +14,33 @@
     <%= meeting.recording_url %>
   </p>
 
+  <div
+    class="row"
+    data-controller="transcription"
+  >
+    <div class="col">
+      <% if meeting.local_meeting_url.present? %>
+        <video controls width=700 data-transcription-target="player">
+          <source src=<%= meeting.recording_url %>>
+        </video>
+      <% else %>
+      <p>
+        You must process this meeting before it can be viewed
+      </p>
+      <% end %>
+    </div>
+
+    <div class="col" style="height: 400px; display: block; overflow: scroll">
+      <% meeting.transcribed_sections.each do |section| %>
+      <p>
+        <a
+          data-action="transcription#seek"
+          data-transcription-seek-param=<%= section.start %>
+          href="/"
+        ><%= "#{Time.at(section.start).utc.strftime("%H:%M:%S")} - #{Time.at(section.end).utc.strftime("%H:%M:%S")}: " %></a>
+        <%= section.text %>
+      </p>
+      <% end %>
+    </div>
+  </div>
 </div>

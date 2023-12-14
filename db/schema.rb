@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_12_015014) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_12_135017) do
   create_table "meetings", force: :cascade do |t|
     t.string "title"
     t.text "status"
     t.text "recording_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "local_meeting_url"
   end
 
   create_table "transcribed_sections", force: :cascade do |t|

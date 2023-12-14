@@ -20,6 +20,9 @@ task transcribe_meeting: [:environment] do
     `wget -O #{full_recording_filename} #{meeting.recording_url} `
   end
 
+  Rails.logger.info("Setting local meeting url")
+  meeting.update!(local_meeting_url: full_recording_filename)
+
   FileUtils.mkdir_p(PROCESSED_REC_DIR)
 
   audio_filename = "#{PROCESSED_REC_DIR}/audio_only_#{meeting_id}#{File.extname(meeting.recording_url)}"
