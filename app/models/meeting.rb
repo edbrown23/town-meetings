@@ -12,4 +12,5 @@
 #
 class Meeting < ApplicationRecord
   has_many :transcribed_sections
+  has_one :meeting_summary
 end

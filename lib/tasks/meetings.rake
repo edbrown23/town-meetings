@@ -58,3 +58,23 @@ task import_transcription: [:environment] do
     )
   end
 end
+
+desc 'Generate summary'
+task generate_summary: [:environment] do
+  meeting_id = ENV.fetch('meeting_id')
+
+  transcription_filename = "#{PROCESSED_REC_DIR}/audio_only_#{meeting_id}.json"
+
+  parsed_transcription = JSON.parse(File.read(transcription_filename))
+
+  client = OpenAiClient.new
+  raw_summary = client.generate_summary(parsed_transcription['text'])
+
+  parsed_summary = raw_summary.body.dig('choices', 0, 'message', 'content')
+
+  MeetingSummary.create!(
+    meeting_id: meeting_id,
+    full_text: parsed_transcription['text'],
+    summary: parsed_summary
+  )
+end

@@ -23,5 +23,7 @@ module TownMeetings
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.x.openai_api_key = ENV.fetch('OPENAI_API_KEY', 'notsecurekey')
   end
 end

@@ -43,4 +43,13 @@
       <% end %>
     </div>
   </div>
+
+  <div>
+    <strong>Summary:</strong>
+    <% if meeting.meeting_summary.present? %>
+    <p><%= meeting.meeting_summary.summary %></p>
+    <% else %>
+    <p>No summary found, generate it</p>
+    <% end %>
+  </div>
 </div>
